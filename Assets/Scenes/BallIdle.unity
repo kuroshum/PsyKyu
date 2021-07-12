@@ -51304,6 +51304,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6990747821689221271, guid: 4460d31eef989b14db24278874e9ae0d, type: 3}
+      propertyPath: m_Name
+      value: FindBallArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990747821689221271, guid: 4460d31eef989b14db24278874e9ae0d, type: 3}
       propertyPath: m_TagString
       value: FindBallArea
       objectReference: {fileID: 0}
