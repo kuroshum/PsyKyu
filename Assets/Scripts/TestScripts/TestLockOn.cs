@@ -7,14 +7,18 @@ public class TestLockOn : MonoBehaviour
 {
     private GameObject[] allenemy = new GameObject[10];
     public List<GameObject> enemys = new List<GameObject>();
-    public List<GameObject> Oncamera_enemys = new List<GameObject>();
 
-    private TestCamera t1;
+    //private TestCamera t1;
 
     // Start is called before the first frame update
     void Start()
     {
-        t1 = GetComponent<TestCamera>();
+
+    }
+
+    private void Awake()
+    {
+        //t1 = GetComponent<TestCamera>();
 
         allenemy = GameObject.FindGameObjectsWithTag("Enemy");
 
@@ -22,6 +26,7 @@ public class TestLockOn : MonoBehaviour
         {
             enemys.Add(a);
         }
+        
     }
 
     // Update is called once per frame
