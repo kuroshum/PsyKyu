@@ -21,6 +21,7 @@ public class StateMachineDemo : MonoBehaviour
         KeyDownE,
         KeyDownC,
     }
+
     private StateMachine<StateType, TriggerType> _stateMachine;
 
     private void Start()
@@ -67,11 +68,14 @@ public class StateMachineDemo : MonoBehaviour
         Debug.Log(stateType + " : Enter routine start.");
         yield return new WaitForSeconds(1);
         Debug.Log(stateType + " : Enter routine end.");
+        /*
+         * ‚±‚±‚Éó‘Ô‚ª•Ï‰»‚µ‚½‚Æ‚«‚Ìİ’è(enemy‚ÌAI•ÏX‚È‚Ç‚ğ“ü‚ê‚é‚Í‚¸)
+         */
     }
     private IEnumerator ExitRoutine(StateType stateType)
     {
-        Debug.Log(stateType + " : Enter routine start.");
+        Debug.Log(stateType + " : Exit routine start.");
         yield return new WaitForSeconds(1);
-        Debug.Log(stateType + " : Enter routine end.");
+        Debug.Log(stateType + " : Exit routine end.");
     }
 }
