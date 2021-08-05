@@ -8,13 +8,32 @@ public class PickUpBall : MonoBehaviour
     [SerializeField]
     private Camera mainCamera;
 
+    // ボールを持っている場合に置くスペース
+    [SerializeField]
+    private GameObject ballIdleSpace;
+
+    // ボールを持ってくるかどうかのフラグ
+    private bool isPickUpBall;
+
+    // ボールを持っているかどうかのフラグ
+    private bool isIdleBall;
+
+    // ボールを持ってくる時のスピード
+    [SerializeField]
+    private float ballSpeed;
+
+    // ロックオンしているボール
+    private GameObject lockonBall;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        isPickUpBall = false;
+        isIdleBall = false;
     }
 
-    private GameObject getLookAtBoal()
+    private void getLookAtBoal()
     {
         // レイと衝突したオブジェクト
         RaycastHit hit;
@@ -28,21 +47,62 @@ public class PickUpBall : MonoBehaviour
         {
             if (hit.collider.gameObject.tag == "FindBallArea")
             {
-                return hit.collider.gameObject.transform.parent.gameObject;
+                // ロックオンしたボールに変化ない場合は更新しない
+                if (lockonBall != hit.collider.transform.parent.gameObject)
+                {
+                    lockonBall = hit.collider.transform.parent.gameObject;
+                }
+            }
+            else
+            {
+                // レイにオブジェクトが衝突しない場合はnull
+                lockonBall = null;
             }
         }
-        
-        return null;
     }
 
     // Update is called once per frame
     void Update()
     {
         // レイを飛ばした先にあるボールを取得
-        GameObject ball = getLookAtBoal();
-        if (ball != null)
+        if(isIdleBall == false)
         {
-            Debug.Log(ball);
+            getLookAtBoal();
+        }
+        // ボールを取得した場合にボールピックアップのフラグを立てる
+        if (lockonBall != null)
+        {
+            if (Input.GetKey(KeyCode.E))
+            {
+               isPickUpBall = true;
+            }
+        }
+        else
+        {
+            isPickUpBall = false;
+        }
+
+        // ボールをピックアップする処理
+        if (isPickUpBall == true)
+        {
+            Vector3 targetVec = ballIdleSpace.transform.position - lockonBall.transform.position;
+
+            if (targetVec.magnitude > 0.1f)
+            {
+                lockonBall.transform.position += targetVec.normalized * ballSpeed * Time.deltaTime;
+            }
+            else
+            {
+                isPickUpBall = false;
+                isIdleBall = true;
+            }
+        }
+
+        // ボールを持っているときの処理
+        if(isIdleBall == true)
+        {
+            Vector3 f = new Vector3(0, Mathf.Sin(Time.time * Mathf.PI) / 5, 0);
+            lockonBall.transform.position = ballIdleSpace.transform.position + f;
         }
     }
 }
