@@ -14,7 +14,6 @@ public class CharacterManager : MonoBehaviour
     [SerializeField]private Transform startPlaceA;
     [SerializeField]private Transform startPlaceB;
     //リスポーン位置候補
-//    public static List<RespawnBeacon> resList = new List<RespawnBeacon>();
     public static List<Transform> resList = new List<Transform>();
 
     // Start is called before the first frame update
@@ -27,13 +26,13 @@ public class CharacterManager : MonoBehaviour
     void Update()
     {
         //Debug用
+        /*
         if (Input.GetKeyDown(KeyCode.A))
         {
             Debug.Log("groupA:\n" + groupA + "\ngroupA.Count:\n" + groupA.Count);
             Debug.Log("groupB:\n" + groupB + "\ngroupB.Count:\n" + groupB.Count);
             Debug.Log("resList:\n" + resList + "\nresList.Count:\n" + resList.Count);
         }
-
         if (Input.GetKeyDown(KeyCode.S))
         {
             RespawnCharacter(groupA[0]);
@@ -41,7 +40,7 @@ public class CharacterManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             RespawnCharacter(groupB[0]);
-        }
+        }*/
     }
 
     //ゲームスタート時
