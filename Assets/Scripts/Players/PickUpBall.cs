@@ -23,7 +23,18 @@ public class PickUpBall : MonoBehaviour
     private float ballSpeed;
 
     // ロックオンしているボール
+    [SerializeField]
     private GameObject lockonBall;
+
+    // フィールド上に存在するボールのリスト
+    [SerializeField]
+    private List<GameObject> onFieldBallList;
+
+    // カメラに映っているボールのリスト
+    [SerializeField]
+    private List<GameObject> onCameraBallList;
+
+    private LockOn lo;
 
 
     // Start is called before the first frame update
@@ -31,10 +42,36 @@ public class PickUpBall : MonoBehaviour
     {
         isPickUpBall = false;
         isIdleBall = false;
+
+        lo = GetComponent<LockOn>();
+        onCameraBallList = new List<GameObject>();
+        onFieldBallList = new List<GameObject>();
+
+        GameObject[] allBall = GameObject.FindGameObjectsWithTag("Ball");
+
+        foreach (GameObject a in allBall)
+        {
+            onFieldBallList.Add(a);
+        }
+
     }
 
     private void getLookAtBoal()
     {
+        // カメラに映っているボールを取得
+        lo.AddListOnCameraTarget(mainCamera, onFieldBallList, onCameraBallList, "Ball");
+        // 持ってくるボールを選択
+        // 取り敢えずインデックス０のものを取得
+        if (onCameraBallList.Count != 0)
+        {
+            lockonBall = onCameraBallList[0];
+        }
+        else
+        {
+            lockonBall = null;
+        }
+
+        /*
         // レイと衝突したオブジェクト
         RaycastHit hit;
 
@@ -59,6 +96,7 @@ public class PickUpBall : MonoBehaviour
                 lockonBall = null;
             }
         }
+        */
     }
 
     // Update is called once per frame
@@ -69,6 +107,7 @@ public class PickUpBall : MonoBehaviour
         {
             getLookAtBoal();
         }
+
         // ボールを取得した場合にボールピックアップのフラグを立てる
         if (lockonBall != null)
         {
