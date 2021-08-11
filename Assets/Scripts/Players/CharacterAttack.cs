@@ -7,10 +7,10 @@ public class CharacterAttack : MonoBehaviour
     private float lefttime = 1.2f;
     private float chargebias = 1.5f;
 
+    private float Straight_vec_bias = 5.0f;
+
     public Vector3 arrivepos;
     public Vector3 vec;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -24,32 +24,49 @@ public class CharacterAttack : MonoBehaviour
         
     }
 
-    public void ThrowBall(float chargetime, Vector3 enemypos, Vector3 FirstVec,GameObject ball)
+    public void ThrowStraightBall(float chargetime, GameObject enemy, Rigidbody ball)
     {
-        lefttime = 1.2f;
+        var vec = (enemy.transform.position - ball.transform.position).normalized * Straight_vec_bias * chargetime;
+        ball.AddForce(vec, ForceMode.Impulse);
+    }
+
+    public void ThrowCurveBall(float chargetime, GameObject enemy, Vector3 FirstVec, GameObject ball, BallManager bm)
+    {
+        lefttime = 0.6f;
         vec = FirstVec;
-        StartCoroutine(Throw(chargetime, enemypos ,ball ));
+        StartCoroutine(CurveThrow(chargetime, enemy , ball.GetComponent<Rigidbody>(), bm));
     }
 
     public void Feint()
     {
-
+        // animationÇÉLÉÉÉìÉZÉãÇ∑ÇÈèàóù
     }
 
-    IEnumerator Throw(float chargetime, Vector3 epos, GameObject ball)
+    IEnumerator CurveThrow(float chargetime, GameObject enemy, Rigidbody ball, BallManager bm)
     {
-        Vector3 dis = arrivepos - ball.transform.position;
+        Vector3 dis = enemy.transform.position - ball.transform.position;
 
         var acc = Vector3.zero;
 
-        acc += 2 * (dis - vec * lefttime) / lefttime * lefttime;
+        acc += 2 * (dis - vec * lefttime) / (lefttime * lefttime);
 
         lefttime -= Time.deltaTime;
 
         vec += acc * Time.deltaTime;
 
-        ball.transform.position += vec * Time.deltaTime;
+        ball.velocity = vec;
+
+        if(lefttime < 0)
+        {
+            StopCoroutine(CurveThrow(chargetime, enemy, ball, bm));
+        }
+        else if(bm.Onhit == true)
+        {
+            StopCoroutine(CurveThrow(chargetime, enemy, ball, bm));
+        }
 
         yield return null;
+
+        StartCoroutine(CurveThrow(chargetime, enemy, ball, bm));
     }
 }
