@@ -47,14 +47,17 @@ public class TestCamera : MonoBehaviour
     private bool touchground = false;
     private bool Isground = false;
     private bool Isjumped = false;
+
+    private bool CanJump = true;
+
     private float jumpmove_speed_value = 0.6f;
     private float jumpforce = 5.0f;
     private float jumpforce_temp;
     private float jumpforce_xz = 1.5f;
     private float jumpforce_xz_temp;
 
-    private float continuejumptime = 0.5f;
-    private int continuejump_cnt = 0;
+    private float continuejumptime = 0.6f;
+    //private int continuejump_cnt = 0;
 
     private Vector3 parentrot;
 
@@ -95,16 +98,6 @@ public class TestCamera : MonoBehaviour
         return value <= min && value >= max;
     }
 
-    void jumpChataring()
-    {
-        Ispush = false;
-    }
-
-    void jumpcontinue()
-    {
-        continuejump_cnt = 0;
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -138,99 +131,65 @@ public class TestCamera : MonoBehaviour
             Isaim = -1;
         }
 
-        if(continuejump_cnt == 0)
-        {
-            jumpforce = jumpforce_temp;
-            jumpforce_xz = jumpforce_xz_temp;
-        }
-        else if(continuejump_cnt == 1)
-        {
-            jumpforce = jumpforce_temp * 0.7f;
-            jumpforce_xz = jumpforce_xz_temp * 0.4f;
-        }
-        else if(continuejump_cnt >= 2)
-        {
-            jumpforce = jumpforce_temp * 0.4f;
-            jumpforce_xz = jumpforce_xz_temp * 0.2f;
-        }
+        //if(continuejump_cnt == 0)
+        //{
+        //    jumpforce = jumpforce_temp;
+        //    jumpforce_xz = jumpforce_xz_temp;
+        //}
+        //else if(continuejump_cnt == 1)
+        //{
+        //    jumpforce = jumpforce_temp * 0.7f;
+        //    jumpforce_xz = jumpforce_xz_temp * 0.4f;
+        //}
+        //else if(continuejump_cnt >= 2)
+        //{
+        //    jumpforce = jumpforce_temp * 0.4f;
+        //    jumpforce_xz = jumpforce_xz_temp * 0.2f;
+        //}
 
-        if (Isground == true && Ispush == false)
+        if (Isground == true)
         {
-            //Debug.Log(Isjumped);
-            //Debug.Log(continuejump_cnt);
-            if (Isjumped)
+            ////Debug.Log(Isjumped);
+            ////Debug.Log(continuejump_cnt);
+            //if (Isjumped)
+            //{
+            //    CancelInvoke("jumpcontinue");
+            //    Invoke("jumpcontinue", continuejumptime);
+            //    continuejump_cnt++;
+            //}
+
+            if(Isjumped)
             {
-                CancelInvoke("jumpcontinue");
-                Invoke("jumpcontinue", continuejumptime);
-                continuejump_cnt++;
+                StartCoroutine(Jump_Time_Delay());
+                Isjumped = false;
             }
 
-            Isjumped = false;
         }
 
-        if (Isground)
+        //jump
+        if (Isground && CanJump)
         {
-            var jumpvec = new Vector3(inputHorizontal, 0, inputVertical).normalized * jumpforce_xz;
-            jumpvec += Vector3.up * jumpforce;
-
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                player_rigidbody.AddForce(jumpvec, ForceMode.Impulse);
-                Isjumped = true;
-                Invoke("jumpChataring", timelag_push);
-                Ispush = true;
+                jump();
             }
+
+            //var jumpvec = new Vector3(inputHorizontal, 0, inputVertical).normalized * jumpforce_xz;
+            //jumpvec += Vector3.up * jumpforce;
+
+            //if (Input.GetKeyDown(KeyCode.Space))
+            //{
+            //    player_rigidbody.AddForce(jumpvec, ForceMode.Impulse);
+            //    Isjumped = true;
+            //    Invoke("jumpChataring", timelag_push);
+            //    Ispush = true;
+            //}
         }
+
+
 
         //移動
-        if (Isaim == 1)
-        {
-            if (inputHorizontal != 0 && inputVertical != 0)
-            {
-                var vecf = main.transform.forward * inputVertical * playerspeed_front;
-                var vecr = main.transform.right * inputHorizontal * playerspeed_side;
-
-                var vec = (vecf + vecr).normalized;
-
-                if (Isjumped)
-                    transform.position += vec * (playerspeed_front + playerspeed_side) / 2.0f * Time.deltaTime * jumpmove_speed_value * aim_speed_bias;
-                else
-                    transform.position += vec * (playerspeed_front + playerspeed_side) / 2.0f * Time.deltaTime * aim_speed_bias;
-
-            }
-            else if (inputHorizontal != 0)
-            {
-                var vec = main.transform.right;
-
-                if (Isjumped)
-                    transform.position += vec * playerspeed_side * Time.deltaTime * inputHorizontal * jumpmove_speed_value * aim_speed_bias;
-                else
-                    transform.position += vec * playerspeed_side * Time.deltaTime * inputHorizontal * aim_speed_bias;
-            }
-            else if (inputVertical != 0)
-            {
-                var vec = main.transform.forward;
-                vec.y = 0;
-                vec = vec.normalized;
-
-                if (Isjumped)
-                    transform.position += vec * playerspeed_front * Time.deltaTime * inputVertical * jumpmove_speed_value * aim_speed_bias;
-                else
-                    transform.position += vec * playerspeed_front * Time.deltaTime * inputVertical * aim_speed_bias;
-            }
-        }
-        else
-        {
-            var vecf = main.transform.forward * inputVertical;
-            vecf.y = 0;
-            vecf = vecf.normalized;
-
-            var vecr = main.transform.right * inputHorizontal;
-
-            var vec = (vecf + vecr).normalized;
-
-            transform.position += vec * playerspeed_front * Time.deltaTime;
-        }
+        move();
     }
 
     private void FixedUpdate()
@@ -303,7 +262,6 @@ public class TestCamera : MonoBehaviour
             }
         }
 
-
         //テスト用　使わない
         //if (Isaim == 1)
         //{
@@ -345,6 +303,12 @@ public class TestCamera : MonoBehaviour
         //aimobj.transform.localRotation = new Quaternion(upvec.x, upvec.y, upvec.z, - mx / pi);
         //aimobj.transform.Rotate(aimobj.transform.right, mousey * rotate_Ysensi * Time.deltaTime * 180.0f / pi);
 
+        CameraWork();
+
+    }
+
+    private void CameraWork()
+    {
         // カメラワーク実装
         main.transform.localPosition = new Vector3(0, radiuscamera * Mathf.Sin(my), -radiuscamera * Mathf.Cos(my));
 
@@ -355,7 +319,117 @@ public class TestCamera : MonoBehaviour
         //main.transform.localPosition = cameranow_pos;
 
         main.transform.LookAt(aimobj.transform);
+    }
 
+    private void move()
+    {
+        if (Isaim == 1)
+        {
+            //ディレイがかかる
+            //if (inputHorizontal != 0 || inputVertical != 0)
+            //{
+            //    var vecf = main.transform.forward * inputVertical * playerspeed_front;
+            //    var vecr = main.transform.right * inputHorizontal * playerspeed_front;
+
+            //    var vec = (vecf + vecr).normalized;
+
+            //    if (Isjumped)
+            //        transform.position += vec * (playerspeed_front + playerspeed_side) / 2.0f * Time.deltaTime * jumpmove_speed_value * aim_speed_bias;
+            //    else
+            //        transform.position += vec * (playerspeed_front + playerspeed_side) / 2.0f * Time.deltaTime * aim_speed_bias;
+
+            //}
+
+            int input_h = 0;
+            int input_v = 0;
+
+            //原始的
+            if(Input.GetKeyDown(KeyCode.W))
+            {
+                input_v++;
+            }
+
+            if(Input.GetKeyDown(KeyCode.S))
+            {
+                input_v--;
+            }
+
+            if(Input.GetKeyDown(KeyCode.D))
+            {
+                input_h++;
+            }
+
+            if(Input.GetKeyDown(KeyCode.A))
+            {
+                input_h--;
+            }
+
+            var vec_vertical = main.transform.forward * input_v;
+            var vec_horizontal = main.transform.right * input_h;
+
+            var move_vec = (vec_vertical + vec_horizontal).normalized * playerspeed_front;
+
+            transform.position += vec_horizontal * Time.deltaTime * aim_speed_bias;
+
+        }
+        else
+        {
+            var vecf = main.transform.forward * inputVertical;
+            vecf.y = 0;
+            vecf = vecf.normalized;
+
+            var vecr = main.transform.right * inputHorizontal;
+
+            var vec = (vecf + vecr).normalized;
+
+            transform.position += vec * playerspeed_front * Time.deltaTime;
+        }
+    }
+
+    private void jump()
+    {
+        var jumpvec = Vector3.up * jumpforce;
+
+        CanJump = false;
+        Isjumped = true;
+        player_rigidbody.AddForce(jumpvec, ForceMode.Impulse);
+    }
+
+    //使ってないです
+    private void CheckWall()
+    {
+        Ray leftray = new Ray(transform.position, - transform.right);
+        Ray rightray = new Ray(transform.position, transform.right);
+        Ray frontray = new Ray(transform.position, transform.forward);
+        Ray backray = new Ray(transform.position, - transform.forward);
+
+        RaycastHit hit;
+
+        if(Physics.Raycast(leftray, out hit, 0.6f))
+        {
+
+        }
+
+        if(Physics.Raycast(rightray, out hit, 0.6f))
+        {
+
+        }
+
+        if (Physics.Raycast(frontray, out hit, 0.6f))
+        {
+
+        }
+
+        if (Physics.Raycast(backray, out hit, 0.6f))
+        {
+
+        }
+    }
+
+    IEnumerator Jump_Time_Delay()
+    {
+        yield return new WaitForSeconds(continuejumptime);
+        CanJump = true;
     }
 
     private void LateUpdate()
@@ -368,6 +442,16 @@ public class TestCamera : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         touchground = true;
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (!Isjumped)
+        {
+            var zero = Vector3.zero;
+            zero.y = player_rigidbody.velocity.y;
+            player_rigidbody.velocity = zero;
+        }
     }
 
     private void OnCollisionExit(Collision collision)
