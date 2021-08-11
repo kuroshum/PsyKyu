@@ -34,6 +34,10 @@ public class PickUpBall : MonoBehaviour
     [SerializeField]
     private List<GameObject> onCameraBallList;
 
+    [SerializeField]
+    private ParticleSystem magicCircle;
+
+
     private LockOn lo;
 
 
@@ -99,6 +103,13 @@ public class PickUpBall : MonoBehaviour
         */
     }
 
+    IEnumerator playMagicCircle()
+    {
+        magicCircle.Play();
+        yield return new WaitForSeconds(1f);
+        magicCircle.Pause();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -134,6 +145,7 @@ public class PickUpBall : MonoBehaviour
             {
                 isPickUpBall = false;
                 isIdleBall = true;
+                StartCoroutine(playMagicCircle());
             }
         }
 
