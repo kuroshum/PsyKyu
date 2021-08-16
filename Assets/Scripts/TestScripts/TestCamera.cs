@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TestCamera : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class TestCamera : MonoBehaviour
     private float rotate_Ysensi = 5.0f;
 
     //振り向き速度
-    private float player_rotspeed = 200.0f;
+    private float player_rotspeed = 1000.0f;
 
     private Vector3 cameranow_pos;
 
@@ -66,13 +67,18 @@ public class TestCamera : MonoBehaviour
     private bool Ispush = false;
 
     //Debug
-    private float test_aimradius = 0.8f;
+    private float test_aimradius = 0.4f;
+    [SerializeField]
+    private Text test;
+    [SerializeField]
+    private Text test2;
+    private float radius = 0.3f;
 
     // Start is called before the first frame update
     void Start()
     {
         harfpi = pi / 2.0f;
-        radiuscamera = 2.0f;
+        radiuscamera = 0.9f;
         aim_default = radiuscamera;
 
         jumpforce_temp = jumpforce;
@@ -98,9 +104,30 @@ public class TestCamera : MonoBehaviour
         return value <= min && value >= max;
     }
 
-    // Update is called once per frame
+    void OnDrawGizmos()
+    {
+        Ray ray = new Ray(transform.position, -transform.up);
+        Gizmos.color = Color.green;
+        RaycastHit hit;
+        var isHit = Physics.SphereCast(ray, radius, out hit, 0.5f);
+
+        if (isHit)
+        {
+            Gizmos.DrawRay(transform.position, -transform.up * hit.distance);
+            Gizmos.DrawWireSphere(transform.position - transform.up * (hit.distance), radius);
+        }
+        else
+        {
+            Gizmos.DrawRay(transform.position, -transform.up * 0.5f);
+            Gizmos.DrawWireSphere(transform.position - transform.up * 0.5f, radius);
+        }
+    }
+
+        // Update is called once per frame
     void Update()
     {
+        //Debug.Log("hi");
+
         //WASD使えるみたい
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
@@ -109,8 +136,10 @@ public class TestCamera : MonoBehaviour
         mousey = Input.GetAxis("Mouse Y");
 
         Ray ray = new Ray(transform.position, -transform.up);
+
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1.0f))
+
+        if (Physics.SphereCast(ray, radius,out hit, 1.0f))
         {
             if (touchground)
             {
@@ -130,6 +159,7 @@ public class TestCamera : MonoBehaviour
         {
             Isaim = -1;
         }
+
 
         //if(continuejump_cnt == 0)
         //{
@@ -186,10 +216,13 @@ public class TestCamera : MonoBehaviour
             //}
         }
 
-
-
         //移動
         move();
+
+        //camerawork
+        //CameraWork();
+
+        //test2.text = Isaim.ToString();
     }
 
     private void FixedUpdate()
@@ -199,68 +232,69 @@ public class TestCamera : MonoBehaviour
 
         my = Mathf.Clamp(my, - 4.0f / 9.0f * pi, 4.0f / 9.0f * pi);
 
-        if(Isaim == 1)
-        {
-            player_rotspeed = 500;
-            var from = gameObject.transform.forward;
-            var to = main.transform.forward;
-            to.y = 0;
-            to = to.normalized;
 
-            var dis = to - from;
-            var min = -0.02f;
-            var max = 0.02f;
+        //if (Isaim == 1)
+        //{
+        //    player_rotspeed = 500;
+        //    var from = gameObject.transform.forward;
+        //    var to = main.transform.forward;
+        //    to.y = 0;
+        //    to = to.normalized;
 
-            if (Isbetween(dis.x, min, max) && Isbetween(dis.y, min, max) && Isbetween(dis.z, min, max))
-            {
+        //    var dis = to - from;
+        //    var min = -0.02f;
+        //    var max = 0.02f;
 
-            }
-            else
-            {
-                gameObject.transform.Rotate(0, player_rotspeed * Time.deltaTime, 0);
-                aimobj.transform.Rotate(0, -player_rotspeed * Time.deltaTime, 0);
-                mx -= player_rotspeed * Time.deltaTime * pi / 180.0f;
-            }
-        }
-        else 
-        {
-            player_rotspeed = 200;
-            if (inputHorizontal != 0 || inputVertical != 0)
-            {
-                var vec = gameObject.transform.forward;
+        //    if (Isbetween(dis.x, min, max) && Isbetween(dis.y, min, max) && Isbetween(dis.z, min, max))
+        //    {
 
-                var vecf = main.transform.forward * inputVertical;
-                vecf.y = 0;
-                vecf = vecf.normalized;
+        //    }
+        //    else
+        //    {
+        //        gameObject.transform.Rotate(0, player_rotspeed * Time.deltaTime, 0);
+        //        aimobj.transform.Rotate(0, -player_rotspeed * Time.deltaTime, 0);
+        //        mx -= player_rotspeed * Time.deltaTime * pi / 180.0f;
+        //    }
+        //}
+        //else
+        //{
+        //    player_rotspeed = 200;
+        //    if (inputHorizontal != 0 || inputVertical != 0)
+        //    {
+        //        var vec = gameObject.transform.forward;
 
-                var vecr = main.transform.right * inputHorizontal;
+        //        var vecf = main.transform.forward * inputVertical;
+        //        vecf.y = 0;
+        //        vecf = vecf.normalized;
 
-                var subject = (vecf + vecr).normalized;
+        //        var vecr = main.transform.right * inputHorizontal;
 
-                //if (Isjumped)
-                //    transform.position += vec * playerspeed_side * Time.deltaTime * jumpmove_speed_value;
-                //else
-                //    transform.position += vec * playerspeed_side * Time.deltaTime;
+        //        var subject = (vecf + vecr).normalized;
 
-                var from = gameObject.transform.forward;
-                var dis = subject - from;
+        //        //if (Isjumped)
+        //        //    transform.position += vec * playerspeed_side * Time.deltaTime * jumpmove_speed_value;
+        //        //else
+        //        //    transform.position += vec * playerspeed_side * Time.deltaTime;
 
-                var min = -0.02f;
-                var max = 0.02f;
+        //        var from = gameObject.transform.forward;
+        //        var dis = subject - from;
+
+        //        var min = -0.02f;
+        //        var max = 0.02f;
 
 
-                if (Isbetween(dis.x, min, max) && Isbetween(dis.y, min, max) && Isbetween(dis.z, min, max))
-                {
-                  
-                }
-                else
-                {
-                    gameObject.transform.Rotate(0, player_rotspeed * Time.deltaTime, 0);
-                    aimobj.transform.Rotate(0, -player_rotspeed * Time.deltaTime, 0);
-                    mx -= player_rotspeed * Time.deltaTime * pi / 180.0f;
-                }
-            }
-        }
+        //        if (Isbetween(dis.x, min, max) && Isbetween(dis.y, min, max) && Isbetween(dis.z, min, max))
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            gameObject.transform.Rotate(0, player_rotspeed * Time.deltaTime, 0);
+        //            aimobj.transform.Rotate(0, -player_rotspeed * Time.deltaTime, 0);
+        //            mx -= player_rotspeed * Time.deltaTime * pi / 180.0f;
+        //        }
+        //    }
+        //}
 
         //テスト用　使わない
         //if (Isaim == 1)
@@ -272,7 +306,7 @@ public class TestCamera : MonoBehaviour
         //    main.transform.localPosition = new Vector3(- radiuscamera * Mathf.Cos(my) * Mathf.Sin(mx), radiuscamera * Mathf.Sin(my), -radiuscamera * Mathf.Cos(my) * Mathf.Cos(mx));
         //}
 
-        var upvec = aimobj.transform.up;
+        //var upvec = aimobj.transform.up;
 
         if (Isaim == 1)
         {
@@ -303,7 +337,7 @@ public class TestCamera : MonoBehaviour
         //aimobj.transform.localRotation = new Quaternion(upvec.x, upvec.y, upvec.z, - mx / pi);
         //aimobj.transform.Rotate(aimobj.transform.right, mousey * rotate_Ysensi * Time.deltaTime * 180.0f / pi);
 
-        CameraWork();
+        //CameraWork();
 
     }
 
@@ -313,8 +347,10 @@ public class TestCamera : MonoBehaviour
         main.transform.localPosition = new Vector3(0, radiuscamera * Mathf.Sin(my), -radiuscamera * Mathf.Cos(my));
 
         aimobj.transform.Rotate(aimobj.transform.up, mousex * rotate_Xsensi * Time.deltaTime * 180.0f / pi);
+        //aimobj.transform.rotation = aimobj.transform.rotation * Quaternion.AngleAxis(mousex * rotate_Xsensi * Time.deltaTime * 180.0f / pi, aimobj.transform.up);
 
-        aimobj.transform.localPosition = new Vector3(-test_aimradius * Mathf.Cos(my) * Mathf.Sin(mx - harfpi), test_aimradius * Mathf.Sin(my) + 0.7f, -test_aimradius * Mathf.Cos(my) * Mathf.Cos(mx - harfpi));
+        var tmp = new Vector3(-test_aimradius * Mathf.Cos(my) * Mathf.Sin(mx - harfpi), test_aimradius * Mathf.Sin(my) + 0.7f, -test_aimradius * Mathf.Cos(my) * Mathf.Cos(mx - harfpi));
+        aimobj.transform.localPosition = tmp + transform.position;
 
         //main.transform.localPosition = cameranow_pos;
 
@@ -323,8 +359,10 @@ public class TestCamera : MonoBehaviour
 
     private void move()
     {
-        if (Isaim == 1)
+        if (Isaim == -1)
         {
+            //Debug.Log("hi");
+
             //ディレイがかかる
             //if (inputHorizontal != 0 || inputVertical != 0)
             //{
@@ -340,36 +378,22 @@ public class TestCamera : MonoBehaviour
 
             //}
 
-            int input_h = 0;
-            int input_v = 0;
-
-            //原始的
-            if(Input.GetKeyDown(KeyCode.W))
+            if (inputHorizontal != 0 || inputVertical != 0)
             {
-                input_v++;
+                var vecf = main.transform.forward * inputVertical;
+                var vecr = main.transform.right * inputHorizontal;
+
+                var move_vec = (vecf + vecr);
+                move_vec.y = 0;
+                move_vec = move_vec.normalized;
+
+                RotatePlayerDirection(move_vec);
+
+                move_vec *= playerspeed_front;
+
+                transform.position += move_vec * Time.deltaTime;
             }
-
-            if(Input.GetKeyDown(KeyCode.S))
-            {
-                input_v--;
-            }
-
-            if(Input.GetKeyDown(KeyCode.D))
-            {
-                input_h++;
-            }
-
-            if(Input.GetKeyDown(KeyCode.A))
-            {
-                input_h--;
-            }
-
-            var vec_vertical = main.transform.forward * input_v;
-            var vec_horizontal = main.transform.right * input_h;
-
-            var move_vec = (vec_vertical + vec_horizontal).normalized * playerspeed_front;
-
-            transform.position += vec_horizontal * Time.deltaTime * aim_speed_bias;
+              
 
         }
         else
@@ -393,6 +417,101 @@ public class TestCamera : MonoBehaviour
         CanJump = false;
         Isjumped = true;
         player_rigidbody.AddForce(jumpvec, ForceMode.Impulse);
+    }
+
+    private void RotatePlayerDirection(Vector3 refvec)
+    {
+        var vec = transform.forward;
+
+        float costheta = CalcInner(refvec, vec) / (refvec.magnitude * vec.magnitude);
+        float theta = Mathf.Acos(costheta);
+
+
+        float degrees = 0;
+        Vector3 outer = Vector3.zero;
+
+        if (costheta == 1)
+        {
+            //Debug.Log(costheta);
+            degrees = 0;
+            outer = transform.up;
+        }
+        else if(costheta == -1)
+        {
+            degrees = 180;
+            outer = transform.up;
+        }
+        else
+        {
+            degrees = theta * 180.0f / pi;
+            outer = CalcOuter(refvec, vec).normalized;
+        }
+
+        var rot_deg = - Time.deltaTime * player_rotspeed;
+        test.text = rot_deg.ToString();
+        test2.text = degrees.ToString();
+
+        if(degrees < rot_deg)
+        {
+            rot_deg = degrees;
+        }
+
+        if (degrees >= 3)
+        {
+            Quaternion rot = Quaternion.AngleAxis(rot_deg, outer);
+            Quaternion q = transform.rotation;
+            transform.rotation = q * rot;
+        }
+
+        //if (degrees <= 1)
+        //{
+
+        //}
+        //else
+        //{
+        //    //theta = theta * Time.deltaTime;
+        //    //mx -= theta;
+
+        //    var outer = CalcOuter(refvec, vec).normalized;
+
+        //    test.text = rot_deg.ToString();
+
+        //    transform.Rotate(outer, - rot_deg);
+
+        //    //Quaternion rot = Quaternion.AngleAxis(rot_deg, outer);
+        //    //Quaternion q = transform.rotation;
+        //    //transform.rotation = q * rot;
+
+        //    //aimobj.transform.Rotate(outer, - rad);
+
+        //    //Quaternion p = aimobj.transform.rotation;
+
+        //    //float r = Quaternion.Angle(q, rot);
+
+        //    //test2.text = outer.ToString();
+
+        //    //transform.Rotate(new Vector3(0, rad * Time.deltaTime, 0));
+        //}
+    }
+
+    private float CalcInner(Vector3 vec1, Vector3 vec2)
+    {
+        float inn;
+        inn = vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+
+        return inn;
+    }
+
+    private Vector3 CalcOuter(Vector3 vec1, Vector3 vec2)
+    {
+        Vector3 vec;
+        float x = vec1.y * vec2.z - vec2.y * vec1.z;
+        float y = vec1.z * vec2.x - vec2.z * vec1.x;
+        float z = vec1.x * vec2.y - vec2.x * vec1.y;
+
+        vec = new Vector3(x,y,z);
+
+        return vec;
     }
 
     //使ってないです
@@ -434,7 +553,7 @@ public class TestCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        
+        CameraWork();
     }
 
     //TagによってGround判定を追加して

@@ -54,8 +54,6 @@ public class CharacterAttack : MonoBehaviour
 
         vec += acc * Time.deltaTime;
 
-        ball.velocity = vec;
-
         if(lefttime < 0)
         {
             StopCoroutine(CurveThrow(chargetime, enemy, ball, bm));
@@ -64,6 +62,12 @@ public class CharacterAttack : MonoBehaviour
         {
             StopCoroutine(CurveThrow(chargetime, enemy, ball, bm));
         }
+        else if(bm.DodgeobjHit == true)
+        {
+            StopCoroutine(CurveThrow(chargetime, enemy, ball, bm));
+        }
+
+        ball.velocity = vec;
 
         yield return null;
 

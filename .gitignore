@@ -69,3 +69,9 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Ignore Test Scene
+/[Aa]ssets/Scenes/IgnoreScene.meta
+/[Aa]ssets/Scenes/IgnoreScene/*
+/[Aa]ssets/Scripts/IgnoreFile/*
+/[Aa]ssets/Scripts/IgnoreFile.meta

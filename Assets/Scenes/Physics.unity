@@ -21805,6 +21805,10 @@ MonoBehaviour:
   mainCamera: {fileID: 963194227}
   ballIdleSpace: {fileID: 1163683644}
   ballSpeed: 10
+  lockonBall: {fileID: 0}
+  onFieldBallList: []
+  onCameraBallList: []
+  magicCircle: {fileID: 0}
 --- !u!136 &802005246
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -26705,7 +26709,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-53546
+  m_Name: pb_Mesh28608
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -46985,7 +46989,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1169895078}
 --- !u!114 &2072197909

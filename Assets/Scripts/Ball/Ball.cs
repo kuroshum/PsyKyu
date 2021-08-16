@@ -5,10 +5,12 @@ using UnityEngine;
 public class BallManager : MonoBehaviour
 {
     public bool Onhit;
+    public bool DodgeobjHit;
 
     private void Awake()
     {
         Onhit = false;
+        DodgeobjHit = false;
     }
 
     // Start is called before the first frame update
@@ -30,5 +32,21 @@ public class BallManager : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         Onhit = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Dodge")
+        {
+            DodgeobjHit = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Dodge")
+        {
+            DodgeobjHit = false;
+        }
     }
 }
