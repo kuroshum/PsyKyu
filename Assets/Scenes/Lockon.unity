@@ -9363,7 +9363,7 @@ Transform:
   m_LocalScale: {x: 0.8000001, y: 1, z: 0.8000001}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &462519089
 GameObject:
@@ -22213,8 +22213,6 @@ MonoBehaviour:
   aimobj: {fileID: 1160316710}
   player_rigidbody: {fileID: 802005244}
   Isaim: 0
-  test: {fileID: 1102470430}
-  test2: {fileID: 462519091}
 --- !u!136 &802005240
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -27286,12 +27284,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1160316710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -30.29691, y: -34.429756, z: -63.43181}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: -30.296907, y: -34.429756, z: -63.431805}
+  m_LocalScale: {x: 0.49999997, y: 0.5, z: 0.49999997}
   m_Children:
   - {fileID: 963194228}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1169895078
 Mesh:

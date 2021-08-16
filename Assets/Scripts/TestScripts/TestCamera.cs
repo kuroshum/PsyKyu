@@ -42,7 +42,7 @@ public class TestCamera : MonoBehaviour
     private Vector3 cameranow_pos;
 
     public int Isaim = 0;
-    private float aim_distance = 1.6f;
+    private float aim_distance = 0.5f;
     private float aim_default;
 
     private bool touchground = false;
@@ -67,18 +67,18 @@ public class TestCamera : MonoBehaviour
     private bool Ispush = false;
 
     //Debug
-    private float test_aimradius = 0.4f;
-    [SerializeField]
-    private Text test;
-    [SerializeField]
-    private Text test2;
+    private float test_aimradius = 0.9f;
+    //[SerializeField]
+    //private Text test;
+    //[SerializeField]
+    //private Text test2;
     private float radius = 0.3f;
 
     // Start is called before the first frame update
     void Start()
     {
         harfpi = pi / 2.0f;
-        radiuscamera = 0.9f;
+        radiuscamera = 2.0f;
         aim_default = radiuscamera;
 
         jumpforce_temp = jumpforce;
@@ -87,11 +87,12 @@ public class TestCamera : MonoBehaviour
         mx = 0;
         my = 1.0f / 6.0f * pi;
 
-        aimobj.transform.localPosition = new Vector3(-test_aimradius * Mathf.Cos(my) * Mathf.Sin(mx - harfpi), test_aimradius * Mathf.Sin(my), -test_aimradius * Mathf.Cos(my) * Mathf.Cos(mx - harfpi));
-        startpos = new Vector3(- radiuscamera * Mathf.Sin(mx), radiuscamera * Mathf.Sin(my),  - radiuscamera * Mathf.Cos(0));
+        aimobj.transform.localPosition = new Vector3(test_aimradius * Mathf.Cos(my) * Mathf.Sin(mx), test_aimradius * Mathf.Sin(my) + 0.1f, test_aimradius * Mathf.Cos(my) * Mathf.Cos(mx)) + transform.position;
+        //startpos = new Vector3(- radiuscamera * Mathf.Sin(mx), radiuscamera * Mathf.Sin(my),  - radiuscamera * Mathf.Cos(0));
+        startpos = aimobj.transform.position - Vector3.forward * radiuscamera;
 
-        main.transform.localPosition = startpos;
-        cameranow_pos = startpos;
+        main.transform.position = startpos;
+        // = startpos;
     }
 
     private bool Isbetween(float value, float min, float max)
@@ -221,7 +222,7 @@ public class TestCamera : MonoBehaviour
 
         //camerawork
         //CameraWork();
-
+        
         //test2.text = Isaim.ToString();
     }
 
@@ -231,7 +232,6 @@ public class TestCamera : MonoBehaviour
         my -= mousey * rotate_Ysensi * Time.deltaTime;
 
         my = Mathf.Clamp(my, - 4.0f / 9.0f * pi, 4.0f / 9.0f * pi);
-
 
         //if (Isaim == 1)
         //{
@@ -344,17 +344,18 @@ public class TestCamera : MonoBehaviour
     private void CameraWork()
     {
         // カメラワーク実装
-        main.transform.localPosition = new Vector3(0, radiuscamera * Mathf.Sin(my), -radiuscamera * Mathf.Cos(my));
+        //main.transform.localPosition = new Vector3(0, radiuscamera * Mathf.Sin(my), -radiuscamera * Mathf.Cos(my));
 
-        aimobj.transform.Rotate(aimobj.transform.up, mousex * rotate_Xsensi * Time.deltaTime * 180.0f / pi);
-        //aimobj.transform.rotation = aimobj.transform.rotation * Quaternion.AngleAxis(mousex * rotate_Xsensi * Time.deltaTime * 180.0f / pi, aimobj.transform.up);
+        //aimobj.transform.Rotate(aimobj.transform.up, mousex * rotate_Xsensi * Time.deltaTime * 180.0f / pi);
+        Quaternion p = Quaternion.AngleAxis(mx * 180.0f / pi, Vector3.up);
+        Quaternion q = Quaternion.AngleAxis(my * 180.0f / pi, Vector3.right);
 
-        var tmp = new Vector3(-test_aimradius * Mathf.Cos(my) * Mathf.Sin(mx - harfpi), test_aimradius * Mathf.Sin(my) + 0.7f, -test_aimradius * Mathf.Cos(my) * Mathf.Cos(mx - harfpi));
-        aimobj.transform.localPosition = tmp + transform.position;
+        aimobj.transform.rotation = p * q;
 
-        //main.transform.localPosition = cameranow_pos;
+        //var tmp = new Vector3(test_aimradius * Mathf.Cos(my) * Mathf.Sin(mx), test_aimradius * Mathf.Sin(my) + 0.1f, test_aimradius * Mathf.Cos(my) * Mathf.Cos(mx));
+        aimobj.transform.position = transform.position + aimobj.transform.right * aim_distance + Vector3.up * 0.3f;
 
-        main.transform.LookAt(aimobj.transform);
+        main.transform.LookAt(aimobj.transform.position);
     }
 
     private void move()
@@ -428,11 +429,11 @@ public class TestCamera : MonoBehaviour
 
 
         float degrees = 0;
+        float tmp = 0;
         Vector3 outer = Vector3.zero;
 
         if (costheta == 1)
         {
-            //Debug.Log(costheta);
             degrees = 0;
             outer = transform.up;
         }
@@ -448,8 +449,7 @@ public class TestCamera : MonoBehaviour
         }
 
         var rot_deg = - Time.deltaTime * player_rotspeed;
-        test.text = rot_deg.ToString();
-        test2.text = degrees.ToString();
+        tmp = rot_deg * pi / 180.00f;
 
         if(degrees < rot_deg)
         {
