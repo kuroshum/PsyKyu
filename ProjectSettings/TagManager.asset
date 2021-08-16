@@ -9,6 +9,8 @@ TagManager:
   - FindBallArea
   - PickUpArea
   - Enemy
+  - FxTemporaire
+  - Wall
   layers:
   - Default
   - TransparentFX
