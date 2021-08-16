@@ -132,8 +132,28 @@ public class CharacterManager : MonoBehaviour
     //相手のグループの中心
     public static Transform SelectRespawnPlace(List<Character> list)
     {
+        int maxIndex = 0;
+        float max = 0;
+        for (int i = 0; i < resList.Count; i++)
+        {
+            float cashLength = 0.0f;
+            for (int j = 0; j < list.Count; j++)
+            {
+                cashLength += (list[j].transform.position - resList[i].transform.position).sqrMagnitude;
+            }
+            if (max < cashLength)
+            {
+                max = cashLength;
+                maxIndex = i;
+            }
+        }
+        return resList[maxIndex];
+    }
+    /*
+    public static Transform SelectRespawnPlace(List<Character> list)
+    {
         Vector3 v3 = new Vector3(0, 0, 0);
-        foreach(Character g in list)
+        foreach (Character g in list)
         {
             v3 += g.transform.position;
         }
@@ -141,14 +161,15 @@ public class CharacterManager : MonoBehaviour
         //一番遠いとこととそのインデックス
         float max = 0;
         int maxIndex = 0;
-        for (int i = 0;i<resList.Count;i++)
+        for (int i = 0; i < resList.Count; i++)
         {
-            if(max< (resList[i].transform.position - v3).sqrMagnitude)
+            if (max < (resList[i].transform.position - v3).sqrMagnitude)
             {
                 max = (resList[i].transform.position - v3).sqrMagnitude;
                 maxIndex = i;
             }
         }
         return resList[maxIndex];
-    }
+    }*/
+
 }
