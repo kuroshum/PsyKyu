@@ -51,6 +51,11 @@ public class StateMachine<TState, TTrigger>
         ChangeStateImmediately(initialState);
     }
 
+    public TState getState()
+    {
+        return _stateType;
+    }
+
     /// <summary>
     /// ƒgƒŠƒK[‚ğÀs‚·‚é
     /// </summary>

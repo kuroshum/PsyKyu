@@ -62,20 +62,36 @@ public class StateMachineDemo : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C)) _stateMachine.ExecuteTrigger(TriggerType.KeyDownC);
         // ステートマシンを更新
         _stateMachine.Update(Time.deltaTime);
+ 
     }
     private IEnumerator EnterRoutine(StateType stateType)
     {
         Debug.Log(stateType + " : Enter routine start.");
         yield return new WaitForSeconds(1);
-        Debug.Log(stateType + " : Enter routine end.");
+        //Debug.Log(stateType + " : Enter routine end.");
         /*
          * ここに状態が変化したときの設定(enemyのAI変更などを入れるはず)
          */
     }
     private IEnumerator ExitRoutine(StateType stateType)
     {
-        Debug.Log(stateType + " : Exit routine start.");
+        //Debug.Log(stateType + " : Exit routine start.");
         yield return new WaitForSeconds(1);
-        Debug.Log(stateType + " : Exit routine end.");
+        //Debug.Log(stateType + " : Exit routine end.");
+    }
+    public void SearchedPlayer()
+    {
+        _stateMachine.ExecuteTrigger(TriggerType.KeyDownA);
+
+    }
+    public void SearchedBall()
+    {
+        _stateMachine.ExecuteTrigger(TriggerType.KeyDownP);
+    }
+    public StateType getState()
+    {
+        return _stateMachine.getState();
+        //return _stateMachine.getState().ToString();
     }
 }
+

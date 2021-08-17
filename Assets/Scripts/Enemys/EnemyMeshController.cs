@@ -5,7 +5,29 @@ using UnityEngine.AI;
 public class EnemyMeshController : MonoBehaviour
 {
     private bool Isground = false;
-    public GameObject TargetObject; NavMeshAgent m_navMeshAgent; Rigidbody rb;
+    //public GameObject TargetObject;
+    private NavMeshAgent m_navMeshAgent;
+    private Rigidbody rb;
+
+    [SerializeField]
+    private Transform[] m_targets = null;
+    [SerializeField]
+    private float m_destinationThreshold = 0.5f;
+    private int m_targetIndex = 0;
+
+    public GameObject Player;
+
+    private float countup = 0.0f;
+    private Vector3 CurretTargetPosition()
+    {
+        if (m_targets == null || m_targets.Length < m_targetIndex)
+        {
+            return Vector3.zero;
+        }
+        return m_targets[m_targetIndex].transform.position;
+    }
+
+
     void Start()
     {
         // NavMeshAgentコンポーネントを取得
@@ -14,6 +36,7 @@ public class EnemyMeshController : MonoBehaviour
         // OffMeshLinkに乗った際のアクション
         StartCoroutine(MoveNormalSpeed(m_navMeshAgent));
     }
+    /*
     void Update()
     {
         Ray ray = new Ray(transform.position, -transform.up);
@@ -27,14 +50,30 @@ public class EnemyMeshController : MonoBehaviour
             Isground = false;
         }
 
-        // NavMeshが準備できているなら
-        if (m_navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
+        if (!m_navMeshAgent.pathPending && m_navMeshAgent.remainingDistance <= m_destinationThreshold)
         {
-            // NavMeshAgentに目的地をセット
-            m_navMeshAgent.SetDestination(TargetObject.transform.position);
+            m_targetIndex = (m_targetIndex + 1) % m_targets.Length;//0,1,2
+            m_navMeshAgent.SetDestination(CurretTargetPosition());
         }
     }
-
+    */
+    void Update()
+    {
+        if (countup <= 2.0f)
+        {
+            countup+= Time.deltaTime;
+        }
+        Ray ray = new Ray(transform.position, -transform.up);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 0.7f))
+        {
+            Isground = true;
+        }
+        else
+        {
+            Isground = false;
+        }
+    }
     IEnumerator MoveNormalSpeed(NavMeshAgent agent)
     {
 
@@ -49,13 +88,11 @@ public class EnemyMeshController : MonoBehaviour
             agent.updatePosition = false;
             agent.updateRotation = false;
 
-
+            
             rb.isKinematic = false;
             rb.AddForce(CalculateVelocity(transform.localPosition, agent.currentOffMeshLinkData.endPos, 60) * rb.mass, ForceMode.Impulse);
-            yield return new WaitWhile(() =>
-            {
-                return Isground;
-            });
+            countup = 0.0f;
+            yield return new WaitWhile(() => countup < 1.0);
             yield return new WaitWhile(() =>
             {
                 return !Isground;
@@ -95,5 +132,23 @@ public class EnemyMeshController : MonoBehaviour
             return (new Vector3(pointB.x - pointA.x, x * Mathf.Tan(rad), pointB.z - pointA.z).normalized * speed);
         }
 
+    }
+
+    public void Finding()
+    {
+        if (!m_navMeshAgent.pathPending && m_navMeshAgent.remainingDistance <= m_destinationThreshold)
+        {
+            m_targetIndex = (m_targetIndex + 1) % m_targets.Length;//0,1,2
+            m_navMeshAgent.SetDestination(CurretTargetPosition());
+        }
+    }
+
+    public void PlayerFound()
+    {
+        if (m_navMeshAgent.pathStatus != NavMeshPathStatus.PathInvalid)
+        {
+            // NavMeshAgentに目的地をセット
+            m_navMeshAgent.SetDestination(Player.transform.position);
+        }
     }
 }
