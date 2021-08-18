@@ -75,3 +75,7 @@ crashlytics-build.properties
 /[Aa]ssets/Scenes/IgnoreScene/*
 /[Aa]ssets/Scripts/IgnoreFile/*
 /[Aa]ssets/Scripts/IgnoreFile.meta
+/[Aa]ssets/Controller Tester/*
+/[Aa]ssets/Controller Tester.meta
+/[Aa]ssets/Materials/MyTestMaterial/*
+/[Aa]ssets/Materials/MyTestMaterial.meta
