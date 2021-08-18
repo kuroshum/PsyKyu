@@ -69,7 +69,6 @@ public class PickUpBall : MonoBehaviour
         {
             parent.SetIsPickUpBall(false);
             parent.SetIsIdleBall(true);
-            ib.Init();
         }
     }
 }

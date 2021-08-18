@@ -49,4 +49,11 @@ public class CharacterDefence : MonoBehaviour
 
         pl.Canplay = true;
     }
+
+
+    public void CatchBall(GameObject forwardSpace)
+    {
+        
+    }
+
 }

@@ -10,10 +10,9 @@ public class Character : MonoBehaviour
     public GameObject GetLockOnBall() { return lockOnBall; }
 
 
-    // 
     protected PickUpBall pub;
-    //
     protected IdleBall ib;
+    protected CharacterDefence cd;
 
 
     // ボールを持ってくるかどうかのフラグ
@@ -30,7 +29,14 @@ public class Character : MonoBehaviour
     {
         isIdleBall = false;
         isPickUpBall = false;
+    }
 
+    protected IEnumerator playMagicCircle(GameObject space, ParticleSystem magicCircle, float pauseMagicCircleSeconds)
+    {
+        magicCircle.transform.position = space.transform.position;
+        magicCircle.Play();
+        yield return new WaitForSeconds(pauseMagicCircleSeconds);
+        magicCircle.Pause();
     }
 
 }
