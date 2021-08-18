@@ -19,13 +19,13 @@ public class CharacterDefence : MonoBehaviour
         
     }
 
-    public void DodgeRoll(Player pl, Vector3 player_move_vec)
+    public void DodgeRoll(Character cha, Vector3 player_move_vec)
     {
         //animationãNìÆ
 
         player_move_vec = player_move_vec.normalized;
 
-        StartCoroutine(Dodge_Time_Delay(pl));
+        StartCoroutine(Dodge_Time_Delay(cha));
         StartCoroutine(Dodge_Move(player_move_vec));
     }
 
@@ -36,17 +36,17 @@ public class CharacterDefence : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator Dodge_Time_Delay(Player pl)
+    IEnumerator Dodge_Time_Delay(Character cha)
     {
         //playerÇ…ñ≥ìGÇïtó^Ç∑ÇÈ && ëÄçÏïsâ¬
-        pl.Isinvinsible = true;
-        pl.Canplay = false;
+        //cha.Isinvinsible = true;
+        //cha.Canplay = false;
         yield return new WaitForSeconds(invinsible_time);
 
-        pl.Isinvinsible = false;
+        //cha.Isinvinsible = false;
 
         yield return new WaitForSeconds(dodgeroll_time - invinsible_time);
 
-        pl.Canplay = true;
+        //cha.Canplay = true;
     }
 }
