@@ -21,10 +21,7 @@ public class TestCamera : MonoBehaviour
     private float inputHorizontal;
     private float inputVertical;
 
-    private float playerspeed_front = 4.0f;
-    private float playerspeed_back = 2.5f;
-    private float playerspeed_side = 3.0f;
-    private float aim_speed_bias = 0.6f;
+    private float playerspeed_front = 6.0f;
 
     //累積
     private float mx = 0;
@@ -37,7 +34,7 @@ public class TestCamera : MonoBehaviour
     private float rotate_Ysensi = 5.0f;
 
     //振り向き速度
-    private float player_rotspeed = 1000.0f;
+    private float player_rotspeed = 1500.0f;
 
     private Vector3 cameranow_pos;
 
@@ -51,11 +48,8 @@ public class TestCamera : MonoBehaviour
 
     private bool CanJump = true;
 
-    private float jumpmove_speed_value = 0.6f;
-    private float jumpforce = 5.0f;
-    private float jumpforce_temp;
+    private float jumpforce = 11.5f;
     private float jumpforce_xz = 1.5f;
-    private float jumpforce_xz_temp;
 
     private float continuejumptime = 0.6f;
     //private int continuejump_cnt = 0;
@@ -81,9 +75,6 @@ public class TestCamera : MonoBehaviour
         radiuscamera = 2.0f;
         aim_default = radiuscamera;
 
-        jumpforce_temp = jumpforce;
-        jumpforce_xz_temp = jumpforce_xz;
-
         mx = 0;
         my = 1.0f / 6.0f * pi;
 
@@ -92,7 +83,13 @@ public class TestCamera : MonoBehaviour
         startpos = aimobj.transform.position - Vector3.forward * radiuscamera;
 
         main.transform.position = startpos;
+
         // = startpos;
+    }
+
+    private void Awake()
+    {
+        jumpforce *= player_rigidbody.mass;
     }
 
     private bool Isbetween(float value, float min, float max)
@@ -149,6 +146,7 @@ public class TestCamera : MonoBehaviour
         }
         else
         {
+            player_rigidbody.velocity -= new Vector3(0, 0.05f, 0);
             Isground = false;
         }
 
@@ -418,14 +416,15 @@ public class TestCamera : MonoBehaviour
         CanJump = false;
         Isjumped = true;
         player_rigidbody.AddForce(jumpvec, ForceMode.Impulse);
+
+        //player_rigidbody.velocity = jumpvec;
     }
 
     private void RotatePlayerDirection(Vector3 refvec)
     {
         var vec = transform.forward;
 
-        float costheta = CalcInner(refvec, vec) / (refvec.magnitude * vec.magnitude);
-        float theta = Mathf.Acos(costheta);
+        float costheta = Vector3.Dot(refvec, vec) / (refvec.magnitude * vec.magnitude);
 
 
         float degrees = 0;
@@ -444,8 +443,9 @@ public class TestCamera : MonoBehaviour
         }
         else
         {
+            float theta = Mathf.Acos(costheta);
             degrees = theta * 180.0f / pi;
-            outer = CalcOuter(refvec, vec).normalized;
+            outer = Vector3.Cross(refvec, vec);
         }
 
         var rot_deg = - Time.deltaTime * player_rotspeed;
