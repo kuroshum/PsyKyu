@@ -27,6 +27,10 @@ public class BallManager : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Onhit = true;
+        if (collision.gameObject.tag == "Wall")
+        {
+            BallSpawnManager.RespawnBall(this.gameObject);
+        }
     }
 
     private void OnCollisionExit(Collision collision)
