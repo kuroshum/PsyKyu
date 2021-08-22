@@ -90,7 +90,7 @@ public class EnemyMeshController : MonoBehaviour
 
             
             rb.isKinematic = false;
-            rb.AddForce(CalculateVelocity(transform.localPosition, agent.currentOffMeshLinkData.endPos, 60) * rb.mass, ForceMode.Impulse);
+            rb.AddForce(CalculateVelocity(transform.localPosition, agent.currentOffMeshLinkData.endPos) * rb.mass, ForceMode.Impulse);
             countup = 0.0f;
             yield return new WaitWhile(() => countup < 1.0);
             yield return new WaitWhile(() =>
@@ -107,20 +107,23 @@ public class EnemyMeshController : MonoBehaviour
         }
     }
 
-    private Vector3 CalculateVelocity(Vector3 pointA, Vector3 pointB, float angle)
+    private Vector3 CalculateVelocity(Vector3 pointA, Vector3 pointB)
     {
+        // 水平方向の距離x
+        float x = Vector2.Distance(new Vector2(pointA.x, pointA.z), new Vector2(pointB.x, pointB.z));
+
+        // 垂直方向の距離y
+        float y = Mathf.Abs(pointA.y - (pointB.y + 0.5f));
+
+        // 射出角度を計算、角度にバイアス足して良い感じの角度にする
+        pointB.y += 2f;
+        float angle = Vector3.Angle(pointB - this.transform.position, new Vector3(pointB.x, 0, pointB.z) - this.transform.position);
 
         // 射出角をラジアンに変換
         float rad = angle * Mathf.PI / 180;
 
-        // 水平方向の距離x
-        float x = Vector2.Distance(new Vector2(pointA.x, pointA.z), new Vector2(pointB.x, pointB.z)) + 2.0f;
-
-        // 垂直方向の距離y
-        float y = pointA.y - (pointB.y + 0.5f);
-
         // 斜方投射の公式を初速度について解く
-        float speed = Mathf.Sqrt(-Physics.gravity.y * Mathf.Pow(x, 2) / (2 * Mathf.Pow(Mathf.Cos(rad), 2) * (x * Mathf.Tan(rad) + y)));
+        float speed = Mathf.Sqrt(-Physics.gravity.y * Mathf.Pow(x, 2) / (2 * Mathf.Pow(Mathf.Cos(rad), 2) * (x * Mathf.Tan(rad) - y)));
 
         if (float.IsNaN(speed))
         {
