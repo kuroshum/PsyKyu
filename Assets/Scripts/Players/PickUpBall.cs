@@ -58,7 +58,7 @@ public class PickUpBall : MonoBehaviour
 
     }
 
-    public void pickUp(GameObject ballIdleSpace, GameObject lockOnBall, IdleBall ib, ParticleSystem magicCircle)
+    public Coroutine pickUp(GameObject ballIdleSpace, GameObject lockOnBall, IdleBall ib, ParticleSystem magicCircle)
     {
         Vector3 targetVec = ballIdleSpace.transform.position - lockOnBall.transform.position;
 
@@ -70,7 +70,13 @@ public class PickUpBall : MonoBehaviour
         {
             parent.SetIsPickUpBall(false);
             parent.SetIsIdleBall(true);
-            StartCoroutine(ib.playMagicCircle(ballIdleSpace, magicCircle, 1.8f));
+            return StartCoroutine(ib.playMagicCircle(ballIdleSpace, magicCircle, 1.8f));
         }
+        return null;
+    }
+
+    public void StopPlayIdleCircleCoroutine(Coroutine coroutine)
+    {
+        StopCoroutine(coroutine);
     }
 }
