@@ -6,7 +6,9 @@ public class IdleBall : MonoBehaviour
 {
     public IEnumerator playMagicCircle(GameObject space, ParticleSystem magicCircle, float pauseMagicCircleSeconds)
     {
-        magicCircle.transform.position = space.transform.position;
+        magicCircle.transform.localPosition = space.transform.localPosition;
+        magicCircle.transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
+        magicCircle.Simulate(0.0f, true, true);
         magicCircle.Play();
         yield return new WaitForSeconds(pauseMagicCircleSeconds);
         magicCircle.Pause();

@@ -14,7 +14,7 @@ public class Player : Character
 
     // ボールをキャッチ・投げるときに魔法陣を置くスペース
     [SerializeField]
-    private GameObject forwardSpace;
+    private GameObject catchSpace;
 
     [SerializeField]
     private ParticleSystem magicCircle;
@@ -52,7 +52,7 @@ public class Player : Character
         // ボールを取得した場合にボールピックアップのフラグを立てる
         if (lockOnBall != null)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) && isIdleBall == false)
             {
                 isPickUpBall = true;
             }
@@ -77,7 +77,8 @@ public class Player : Character
         // ボールをキャッチする
         if (Input.GetKeyDown(KeyCode.Q) && isCatchBall == false)
         {
-            cd.CatchBall(forwardSpace, magicCircle);
+            isIdleBall = false;
+            cd.CatchBall(catchSpace, magicCircle);
         }
 
 

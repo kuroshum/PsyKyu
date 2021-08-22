@@ -45,9 +45,10 @@ public class CharacterDefence : MonoBehaviour
     // ñ⁄ÇÃëOÇ…ñÇñ@êwÇèoåªÇ≥ÇπÇÈ
     private IEnumerator playMagicCircle(GameObject space, ParticleSystem magicCircle, float pauseMagicCircleSeconds)
     {
-        magicCircle.transform.position = space.transform.position;
-        magicCircle.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        magicCircle.transform.localPosition = space.transform.localPosition;
+        magicCircle.transform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
         parent.SetIsCatchBall(true);
+        magicCircle.Simulate(0.0f, true, true);
         magicCircle.Play();
         yield return new WaitForSeconds(pauseMagicCircleSeconds);
         parent.SetIsCatchBall(false);
