@@ -13,6 +13,7 @@ public class Character : MonoBehaviour
     protected PickUpBall pub;
     protected IdleBall ib;
     protected CharacterDefence cd;
+    protected CharacterJump cj;
 
 
     // ボールを持ってくるかどうかのフラグ
@@ -27,13 +28,29 @@ public class Character : MonoBehaviour
     protected bool isCatchBall;
     public void SetIsCatchBall(bool isCatchBall) { this.isCatchBall = isCatchBall; }
 
+    // 
+    protected bool isTouchGround;
+    public void SetIsTouchGround(bool isTouchGround) { this.isTouchGround = isTouchGround; }
+    // 
+    protected bool isGround;
+    public void SetIsGround(bool isGround) { this.isGround = isGround; }
+    //
+    protected bool isJumped;
+    public void SetIsJumped(bool isJumped) { this.isJumped = isJumped; }
+    //
+    protected bool canJump;
+    public void SetCanJump(bool canJump) { this.canJump = canJump; }
 
-    // Start is called before the first frame update
-    void Awake()
+    protected void InitCharacterFlags()
     {
         isIdleBall = false;
         isPickUpBall = false;
         isCatchBall = false;
+        isTouchGround = false;
+        isGround = false;
+        isJumped = false;
+        isJumped = false;
+        canJump = true;
     }
 
 }
