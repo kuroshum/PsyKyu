@@ -33,6 +33,9 @@ public class Player : Character
         pub.SetParent(this);
 
         ib = GetComponent<IdleBall>();
+
+        cd = GetComponent<CharacterDefence>();
+        cd.SetParent(this);
     }
 
     // Update is called once per frame
@@ -49,7 +52,7 @@ public class Player : Character
         // ボールを取得した場合にボールピックアップのフラグを立てる
         if (lockOnBall != null)
         {
-            if (Input.GetKey(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 isPickUpBall = true;
             }
@@ -62,8 +65,7 @@ public class Player : Character
         // ボールを持ってくる
         if (isPickUpBall == true)
         {
-            pub.pickUp(ballIdleSpace, lockOnBall, ib);
-            StartCoroutine(playMagicCircle(ballIdleSpace, magicCircle, 1.8f));
+            pub.pickUp(ballIdleSpace, lockOnBall, ib, magicCircle);
         }
 
         // ボールをidleする
@@ -73,10 +75,9 @@ public class Player : Character
         }
 
         // ボールをキャッチする
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && isCatchBall == false)
         {
-            StartCoroutine(playMagicCircle(forwardSpace, magicCircle, 1.8f));
-            cd.CatchBall(forwardSpace);
+            cd.CatchBall(forwardSpace, magicCircle);
         }
 
 

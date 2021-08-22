@@ -23,20 +23,17 @@ public class Character : MonoBehaviour
     protected bool isIdleBall;
     public void SetIsIdleBall(bool isIdleBall) { this.isIdleBall = isIdleBall; }
 
+    // ボールをキャッチする状態になっているかどうか
+    protected bool isCatchBall;
+    public void SetIsCatchBall(bool isCatchBall) { this.isCatchBall = isCatchBall; }
+
 
     // Start is called before the first frame update
     void Awake()
     {
         isIdleBall = false;
         isPickUpBall = false;
-    }
-
-    protected IEnumerator playMagicCircle(GameObject space, ParticleSystem magicCircle, float pauseMagicCircleSeconds)
-    {
-        magicCircle.transform.position = space.transform.position;
-        magicCircle.Play();
-        yield return new WaitForSeconds(pauseMagicCircleSeconds);
-        magicCircle.Pause();
+        isCatchBall = false;
     }
 
 }

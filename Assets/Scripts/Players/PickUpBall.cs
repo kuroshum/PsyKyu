@@ -44,6 +44,7 @@ public class PickUpBall : MonoBehaviour
     {
         // カメラに映っているボールを取得
         lo.AddListOnCameraTarget(camera, onFieldBallList, onCameraBallList, "Ball");
+
         // 持ってくるボールを選択
         // 取り敢えずインデックス０のものを取得
         if (onCameraBallList.Count != 0)
@@ -57,7 +58,7 @@ public class PickUpBall : MonoBehaviour
 
     }
 
-    public void pickUp(GameObject ballIdleSpace, GameObject lockOnBall, IdleBall ib)
+    public void pickUp(GameObject ballIdleSpace, GameObject lockOnBall, IdleBall ib, ParticleSystem magicCircle)
     {
         Vector3 targetVec = ballIdleSpace.transform.position - lockOnBall.transform.position;
 
@@ -69,6 +70,7 @@ public class PickUpBall : MonoBehaviour
         {
             parent.SetIsPickUpBall(false);
             parent.SetIsIdleBall(true);
+            StartCoroutine(ib.playMagicCircle(ballIdleSpace, magicCircle, 1.8f));
         }
     }
 }
