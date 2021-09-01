@@ -10,45 +10,30 @@ public class PlayerMover : MonoBehaviour
 
 
     // プレイヤーの移動
-    public void Move(bool isAim, float inputHorizontal, float inputVertical, float frontMoveSpeed, float rotateSpeed, Camera mainCamera)
+    public void Move(float inputHorizontal, float inputVertical, float frontMoveSpeed, float rotateSpeed, Camera mainCamera)
     {
-        if (isAim == false)
+        // 何か入力値がある場合はプレイヤーを動かす
+        if (inputHorizontal != 0 || inputVertical != 0)
         {
-            // 何か入力値がある場合はプレイヤーを動かす
-            if (inputHorizontal != 0 || inputVertical != 0)
-            {
-                // 入力値から水平・垂直方向の移動ベクトルを求める
-                var vecf = mainCamera.transform.forward * inputVertical;
-                var vecr = mainCamera.transform.right * inputHorizontal;
-
-                // 水平・垂直方向のベクトルを統合
-                var move_vec = (vecf + vecr);
-                move_vec.y = 0;
-                move_vec = move_vec.normalized;
-
-                // 移動する向きにプレイヤーを回転する
-                RotatePlayerDirection(move_vec, rotateSpeed);
-
-                // プレイヤーの移動速度を移動ベクトルから計算
-                move_vec *= frontMoveSpeed;
-
-                // プレイヤーを移動
-                transform.position += move_vec * Time.deltaTime;
-            }
-
-        }
-        else
-        {
+            // 入力値から水平・垂直方向の移動ベクトルを求める
             var vecf = mainCamera.transform.forward * inputVertical;
-            vecf.y = 0;
-            vecf = vecf.normalized;
-
             var vecr = mainCamera.transform.right * inputHorizontal;
 
-            var vec = (vecf + vecr).normalized;
+            // 水平・垂直方向のベクトルを統合
+            var move_vec = (vecf + vecr);
+            move_vec.y = 0;
+            move_vec = move_vec.normalized;
 
-            transform.position += vec * frontMoveSpeed * Time.deltaTime;
+            // 移動する向きにプレイヤーを回転する
+            RotatePlayerDirection(move_vec, rotateSpeed);
+
+            // プレイヤーの移動速度を移動ベクトルから計算
+            move_vec *= frontMoveSpeed;
+
+            // プレイヤーを移動
+            transform.position += move_vec * Time.deltaTime;
         }
+
     }
 
     // プレイヤーの移動先を観るように回転

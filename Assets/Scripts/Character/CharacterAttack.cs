@@ -66,6 +66,10 @@ public class CharacterAttack : MonoBehaviour
         {
             StopCoroutine(CurveThrow(chargetime, enemy, ball, bm));
         }
+        else if(bm.isCatched == true)
+        {
+            StopCoroutine(CurveThrow(chargetime, enemy, ball, bm));
+        }
 
         ball.velocity = vec;
 
