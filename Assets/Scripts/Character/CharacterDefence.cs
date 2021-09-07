@@ -45,20 +45,44 @@ public class CharacterDefence : MonoBehaviour
     // 目の前に魔法陣を出現させる
     private IEnumerator playMagicCircle(GameObject space, ParticleSystem magicCircle, float pauseMagicCircleSeconds)
     {
+        // 魔法陣の位置と角度調整
         magicCircle.transform.localPosition = space.transform.localPosition;
         magicCircle.transform.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-        parent.SetIsCatchBall(true);
+        
+        // ボールをキャッチする構えを取る
+        parent.SetIsCatchBall(false);
+        // 魔法陣のパーティクルを再生
         magicCircle.Simulate(0.0f, true, true);
         magicCircle.Play();
+        
         yield return new WaitForSeconds(pauseMagicCircleSeconds);
-        parent.SetIsCatchBall(false);
+
+        // 魔法陣のパーティクルを停止
+        magicCircle.Simulate(0.0f, true, true);
+        magicCircle.Pause();
+        
+        // ボールをキャッチする構えをとく
+        parent.SetIsCatchBall(true);
+
+        // 飛んできたボールをキャッチしたボールに設定する
+        if (parent.GetThrowToMeBall() != null)
+        {
+            parent.SetCatchedBall(parent.GetThrowToMeBall());
+            parent.SetThrowToMeBall(null);
+            parent.SetIsIdleBall(true);
+        }
     }
 
 
     // ボールをキャッチする
-    public void CatchBall(GameObject forwardSpace, ParticleSystem magicCircle)
+    public void PlayCatchMagicCircle(GameObject catchSpace, ParticleSystem magicCircle, float pauseMagicCircleSeconds)
     {
-        StartCoroutine(playMagicCircle(forwardSpace, magicCircle, 3.0f));
+        StartCoroutine(playMagicCircle(catchSpace, magicCircle, pauseMagicCircleSeconds));
+    }
+
+    public void CatchBall(GameObject space, GameObject ball)
+    {
+        ball.transform.position = space.transform.position;
     }
 
 }

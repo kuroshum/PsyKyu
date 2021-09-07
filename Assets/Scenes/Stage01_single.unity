@@ -45353,6 +45353,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 60, y: -90, z: 0}
+--- !u!1 &1777911472 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8153296314731239735, guid: 4460d31eef989b14db24278874e9ae0d, type: 3}
+  m_PrefabInstance: {fileID: 168227640}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1777911478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777911472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d41020f51a958e3419e22e81f7117a7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Onhit: 0
+  DodgeobjHit: 0
+  isCatched: 0
 --- !u!43 &1802056206
 Mesh:
   m_ObjectHideFlags: 0
@@ -60506,6 +60526,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2095474415}
+  - component: {fileID: 2095474416}
   m_Layer: 0
   m_Name: CatchSpace
   m_TagString: Untagged
@@ -60527,6 +60548,18 @@ Transform:
   m_Father: {fileID: 802005243}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2095474416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095474414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250a00964b9bce04e8acad6ee148f0df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &2121950564 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 19800008, guid: e3d819d8722fa1f47a3f68574b56dfb3, type: 3}

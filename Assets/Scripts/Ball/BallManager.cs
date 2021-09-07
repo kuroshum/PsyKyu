@@ -6,6 +6,7 @@ public class BallManager : MonoBehaviour
 {
     public bool Onhit;
     public bool DodgeobjHit;
+    public bool isCatched;
 
     private void Awake()
     {
@@ -21,7 +22,6 @@ public class BallManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     private void OnCollisionEnter(Collision collision)

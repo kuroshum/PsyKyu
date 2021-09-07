@@ -127,8 +127,15 @@ public class Player : Character
 
         pcw = GetComponent<PlayerCameraWork>();
 
+        ccpm = catchSpace.GetComponent<CharacterCatchSpaceManager>();
+        ccpm.SetParent(this);
+
         // フラグの初期化
         InitCharacterFlags();
+
+        SetLockOnBall(null);
+        SetCatchedBall(null);
+        SetThrowToMeBall(null);
 
         // 
         aimObj.transform.localPosition = new Vector3(aimRadius * Mathf.Cos(mouseY) * Mathf.Sin(mouseX), aimRadius * Mathf.Sin(mouseY) + 0.1f, aimRadius * Mathf.Cos(mouseY) * Mathf.Cos(mouseX)) + transform.position;
@@ -154,16 +161,6 @@ public class Player : Character
         mouseY = Input.GetAxis("Mouse Y");
 
 
-        if (Input.GetMouseButton(1))
-        {
-            isAim = true;
-        }
-        else
-        {
-            isAim = false;
-        }
-
-
         // 地面に接地しているか
         cj.CheckIsGround(isTouchGround, checkIsGroundShphereRadius, this.transform, ref rigidBody);
 
@@ -180,7 +177,7 @@ public class Player : Character
         }
 
         // 移動処理
-        pm.Move(isAim, inputHorizontal, inputVertical, frontMoveSpeed, rotateSpeed, mainCamera);
+        pm.Move(inputHorizontal, inputVertical, frontMoveSpeed, rotateSpeed, mainCamera);
 
         // レイを飛ばした先にあるボールを取得
         if (isIdleBall == false) { pub.getPlayerLookAtBoal(mainCamera); }
@@ -201,27 +198,73 @@ public class Player : Character
         // ボールを持ってくる
         if (isPickUpBall == true)
         {
-            playIdleCircleCoroutine = pub.pickUp(ballIdleSpace, lockOnBall, ib, magicCircle);
+            pub.pickUp(ballIdleSpace, lockOnBall);
+            //playIdleCircleCoroutine = StartCoroutine(ib.playMagicCircle(ballIdleSpace, magicCircle, 1.8f));
+            
+            // ロックオンしているボールをキャッチしているボールに変更する
+            if (lockOnBall != null)
+            {
+                SetCatchedBall(lockOnBall);
+                SetLockOnBall(null);
+            }
         }
 
         // ボールをidleする
         if (isIdleBall == true)
         {
-            ib.Idle(ballIdleSpace, lockOnBall);
+            // 
+            if (catchedBall != null)
+            {
+                if (isPreIdleBall == false)
+                {
+                    bm = catchedBall.GetComponent<BallManager>();
+                    bm.isCatched = true;
+                    playIdleCircleCoroutine = StartCoroutine(ib.playMagicCircle(ballIdleSpace, magicCircle, 1.8f));
+                }
+                ib.Idle(ballIdleSpace, catchedBall);
+            }
+        }
+        // ボールをIdleしてないときはボールのキャッチフラグを折る
+        else
+        {
+            if (bm != null)
+            {
+                bm.isCatched = false;
+                bm = null;
+            }
         }
 
+
+        // ===========================================================
         // ボールをキャッチする
-        if (Input.GetKeyDown(KeyCode.Q) && isCatchBall == false)
+        
+        // ボールをキャッチする構えに入る
+        if (Input.GetKeyDown(KeyCode.Q) && isCatchBall == true)
         {
-            isIdleBall = false;
+            // ボールをIdleしているときはボールを離す
+            SetIsIdleBall(false);
+            
+            // 魔法陣を表示している場合は解除する
             if (playIdleCircleCoroutine != null)
             {
                 pub.StopPlayIdleCircleCoroutine(playIdleCircleCoroutine);
                 playIdleCircleCoroutine = null;
             }
-            cd.CatchBall(catchSpace, magicCircle);
+            // キャッチスペースに魔法陣を表示する
+            // キャッチの構えに入る
+            cd.PlayCatchMagicCircle(catchSpace, magicCircle, 0.5f);
         }
 
+        // catchSpaceにボールがEnterした or ボールをキャッチする構えに入っている場合
+        if (ccpm.GetOnBallHit() == true && isCatchBall == false)
+        {
+            // ボールをキャッチする
+            cd.CatchBall(catchSpace, throwToMeBall);
+        }
+        // ===========================================================
+
+
+        isPreIdleBall = isIdleBall;
 
     }
 

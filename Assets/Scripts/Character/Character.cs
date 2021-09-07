@@ -9,11 +9,24 @@ public class Character : MonoBehaviour
     public void SetLockOnBall(GameObject lockOnBall) { this.lockOnBall = lockOnBall; }
     public GameObject GetLockOnBall() { return lockOnBall; }
 
+    // キャッチしているボール
+    protected GameObject catchedBall;
+    public void SetCatchedBall(GameObject catchedBall) { this.catchedBall = catchedBall; }
+    public GameObject GetCatchedBall() { return catchedBall; }
+
+    // 自分に飛んでくるボール
+    protected GameObject throwToMeBall;
+    public void SetThrowToMeBall(GameObject throwToMeBall) { this.throwToMeBall = throwToMeBall; }
+    public GameObject GetThrowToMeBall() { return throwToMeBall; }
+
+
 
     protected PickUpBall pub;
     protected IdleBall ib;
     protected CharacterDefence cd;
     protected CharacterJump cj;
+    protected CharacterCatchSpaceManager ccpm;
+    protected BallManager bm;
 
 
     // ボールを持ってくるかどうかのフラグ
@@ -23,6 +36,8 @@ public class Character : MonoBehaviour
     // ボールを持っているかどうかのフラグ
     protected bool isIdleBall;
     public void SetIsIdleBall(bool isIdleBall) { this.isIdleBall = isIdleBall; }
+    // 1フレーム前 : ボールを持っているかどうかのフラグ
+    protected bool isPreIdleBall;
 
     // ボールをキャッチする状態になっているかどうか
     protected bool isCatchBall;
@@ -44,8 +59,9 @@ public class Character : MonoBehaviour
     protected void InitCharacterFlags()
     {
         isIdleBall = false;
+        isPreIdleBall = false;
         isPickUpBall = false;
-        isCatchBall = false;
+        isCatchBall = true;
         isTouchGround = false;
         isGround = false;
         isJumped = false;
