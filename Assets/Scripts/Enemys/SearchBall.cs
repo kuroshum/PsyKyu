@@ -8,22 +8,19 @@ public class SearchBall : MonoBehaviour
     Ray ray;
     RaycastHit hit;
     Vector3 direction;   // Rayを飛ばす方向
-    float distance = 10;    // Rayを飛ばす距離
-
-    private Camera enemyCamera;
-    // Start is called before the first frame update
+    //float distance = 10;    // Rayを飛ばす距離
+    [SerializeField]
+    private float searchAngle = 130f;
+    private bool ballfind;
+    
     void Start()
     {
+        ballfind = false;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     public bool Ballhit()
     {
-        Vector3 fwd = transform.TransformDirection(Vector3.forward);
+        /*Vector3 fwd = transform.TransformDirection(Vector3.forward);
         //メインカメラ上のマウスポインタのある位置からrayを飛ばす
         Ray ray = new Ray(transform.position, fwd);
         RaycastHit hit;
@@ -39,6 +36,32 @@ public class SearchBall : MonoBehaviour
                 return true;
             }
         }
-        return false;
+        return false;*/
+        return ballfind;
+    }
+    void OnTriggerStay(Collider col)
+    {
+        //　ボールを発見
+        if (col.tag == "Ball")
+        {
+            Debug.DrawLine(transform.position + Vector3.up, col.transform.position, Color.blue);
+            var ballDirection = col.transform.position - transform.position;
+            var angle = Vector3.Angle(transform.forward, ballDirection);
+            if (angle <= searchAngle)
+            {
+                if (Physics.Linecast(transform.position + Vector3.up, col.transform.position , out hit))
+                {
+                    if (hit.collider.tag != col.tag)
+                    {
+                        ballfind = false;
+                    }
+                    else
+                    {
+                        ballfind = true;
+                    }
+                }
+            }
+        }
+        
     }
 }
